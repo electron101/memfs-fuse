@@ -560,6 +560,11 @@ static int memfs_write(const char *path, const char *buf, size_t size, off_t off
 
   struct node *node = fh->node;
 
+  // Checking write permissions for the file owner
+  if (!(node->vstat.st_mode & S_IWUSR)) {
+	  return -EACCES;
+  }
+
   // Calculate number of required blocks
   blkcnt_t req_blocks = (offset + size + BLOCKSIZE - 1) / BLOCKSIZE;
 
